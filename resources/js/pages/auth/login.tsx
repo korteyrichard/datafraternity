@@ -23,12 +23,12 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-yellow-600 via-yellow-700 to-yellow-800 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-blue-900 flex items-center justify-center p-4">
             <Head title="Log in" />
             <div className="w-full max-w-sm">
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <div className="flex flex-col items-center mb-8">
-                        <img src='/bulkdata.jpg' alt="Logo" className="w-40 h-20 mb-6 rounded-lg" />
+                        <img src='/datafraternity.png' alt="Logo" className="w-60 h-30 mb-6 rounded-lg" />
                     </div>
                     <form onSubmit={submit} className="space-y-4">
                         <div>
@@ -42,7 +42,7 @@ export default function Login() {
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
                                 autoFocus
-                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-3 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                             />
                             {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
                         </div>
@@ -57,7 +57,7 @@ export default function Login() {
                                     autoComplete="current-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 pr-10 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                 />
                                 <button
                                     type="button"
@@ -74,24 +74,24 @@ export default function Login() {
                             {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
                         </div>
                         <Button 
-                            className="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-md font-medium transition-colors" 
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-blue-900 py-3 rounded-md font-medium transition-colors" 
                             disabled={processing}
                         >
                             Sign in →
                         </Button>
                     </form>
                     <div className="mt-6 text-center space-y-2">
-                        <div className="text-sm text-gray-600">
-                            New to our site? <Link href={route('register')} className="text-blue-600 hover:underline">Signup</Link>
+                        <div className="text-sm text-blue-700">
+                            New to our site? <Link href={route('register')} className="text-yellow-600 hover:underline font-medium">Signup</Link>
                         </div>
                         <div className="text-sm">
-                            <Link href={route('password.request')} className="text-blue-600 hover:underline">Forgot password?</Link>
-                            <span className="mx-2 text-gray-400">•</span>
-                            <Link href="/" className="text-blue-600 hover:underline">Home</Link>
+                            <Link href={route('password.request')} className="text-yellow-600 hover:underline font-medium">Forgot password?</Link>
+                            <span className="mx-2 text-blue-400">•</span>
+                            <Link href="/" className="text-yellow-600 hover:underline font-medium">Home</Link>
                         </div>
                     </div>
                     <div className="mt-4">
-                        <label className="flex items-center gap-2 text-sm text-gray-600">
+                        <label className="flex items-center gap-2 text-sm text-blue-700">
                             <input
                                 type="checkbox"
                                 name="remember"

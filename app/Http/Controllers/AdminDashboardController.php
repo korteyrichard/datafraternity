@@ -71,8 +71,7 @@ class AdminDashboardController extends Controller
             'todayUsers' => $todayUsers,
             'todayOrders' => $todayOrders,
             'todayTransactions' => $todayTransactions,
-            'jaybartOrderPusherEnabled' => (bool) Setting::get('jaybart_order_pusher_enabled', 1),
-            'codecraftOrderPusherEnabled' => (bool) Setting::get('codecraft_order_pusher_enabled', 1),
+            'orderPusherEnabled' => (bool) Setting::get('order_pusher_enabled', 1),
         ]);
     }
 
@@ -700,26 +699,14 @@ class AdminDashboardController extends Controller
     }
 
     /**
-     * Toggle Jaybart order pusher functionality.
+     * Toggle order pusher functionality.
      */
-    public function toggleJaybartOrderPusher(Request $request)
+    public function toggleOrderPusher(Request $request)
     {
         $enabled = $request->input('enabled', false);
-        Setting::set('jaybart_order_pusher_enabled', $enabled ? '1' : '0');
+        Setting::set('order_pusher_enabled', $enabled ? '1' : '0');
         
         $status = $enabled ? 'enabled' : 'disabled';
-        return redirect()->back()->with('success', "Jaybart order pusher {$status} successfully.");
-    }
-
-    /**
-     * Toggle CodeCraft order pusher functionality.
-     */
-    public function toggleCodecraftOrderPusher(Request $request)
-    {
-        $enabled = $request->input('enabled', false);
-        Setting::set('codecraft_order_pusher_enabled', $enabled ? '1' : '0');
-        
-        $status = $enabled ? 'enabled' : 'disabled';
-        return redirect()->back()->with('success', "CodeCraft order pusher {$status} successfully.");
+        return redirect()->back()->with('success', "Order pusher {$status} successfully.");
     }
 }

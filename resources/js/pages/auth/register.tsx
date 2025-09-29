@@ -27,12 +27,12 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-yellow-600 via-yellow-700 to-yellow-800 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-blue-900 flex items-center justify-center p-4">
             <Head title="Register" />
             <div className="w-full max-w-sm">
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <div className="flex flex-col items-center mb-8">
-                        <img src='/bulkdata.jpg' alt="Logo" className="w-40 h-20 mb-6 rounded-lg" />
+                        <img src='/datafraternity.png' alt="Logo" className="w-60 h-30 mb-6 rounded-lg" />
                     </div>
                     <form onSubmit={submit} className="space-y-4">
                         <div>
@@ -141,18 +141,18 @@ export default function Register() {
                             {errors.password_confirmation && <div className="text-red-500 text-xs mt-1">{errors.password_confirmation}</div>}
                         </div>
                         <Button 
-                            className="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-md font-medium transition-colors" 
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-blue-900 py-3 rounded-md font-medium transition-colors" 
                             disabled={processing}
                         >
                             Create Account →
                         </Button>
                     </form>
                     <div className="mt-6 text-center space-y-2">
-                        <div className="text-sm text-gray-600">
-                            Already have an account? <Link href={route('login')} className="text-blue-600 hover:underline">Sign in</Link>
+                        <div className="text-sm text-blue-700">
+                            Already have an account? <Link href={route('login')} className="text-yellow-600 hover:underline font-medium">Sign in</Link>
                         </div>
                         <div className="text-sm">
-                            <Link href="/" className="text-blue-600 hover:underline">Home</Link>
+                            <Link href="/" className="text-yellow-600 hover:underline font-medium">Home</Link>
                         </div>
                     </div>
                 </div>

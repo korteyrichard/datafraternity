@@ -72,7 +72,7 @@ export default function Dashboard({ auth }: DashboardProps) {
 
 
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-white">
         {/* Hero Section */}
         <div className="px-4 sm:px-8 mb-8">
           <div className="flex items-center space-x-6">
@@ -87,7 +87,7 @@ export default function Dashboard({ auth }: DashboardProps) {
             {auth.user.role === 'customer' && (
               <div className="ml-auto">
                 <Link
-                  href={route('become_an_agent')}
+                  href={route('become_a_dealer')}
                   className="inline-block px-6 py-2 text-white font-medium rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Become A Dealer
@@ -101,56 +101,58 @@ export default function Dashboard({ auth }: DashboardProps) {
 
         {/* Wallet Section */}
         <div className="px-4 sm:px-8">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-4 sm:p-6 mb-8">
+          <div className="bg-blue-900 rounded-xl shadow-lg p-4 sm:p-6 mb-8">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
               <div>
                 <p className="text-white/80 text-sm mb-1">Wallet Balance</p>
                 <p className="text-lg sm:text-lg font-bold text-white">GHS {walletBalance}</p>
               </div>
-              <div className="sm:text-right">
-                <p className="text-white/80 text-sm mb-2">Wallet Top Up</p>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                  <input 
-                    type="number" 
-                    placeholder="Enter Amount" 
-                    value={addAmount}
-                    onChange={e => setAddAmount(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                  />
-                  <button 
-                    onClick={async () => {
-                      if (!addAmount) return;
-                      setIsAdding(true);
-                      try {
-                        const response = await fetch('/dashboard/wallet/add', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                          },
-                          body: JSON.stringify({ amount: addAmount }),
-                        });
-                        const data = await response.json();
-                        if (data.success && data.payment_url) {
-                          window.location.href = data.payment_url;
-                        } else {
-                          alert(data.message || 'Failed to initialize payment.');
+              {auth.user.role !== 'dealer' && (
+                <div className="sm:text-right">
+                  <p className="text-white/80 text-sm mb-2">Wallet Top Up</p>
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <input 
+                      type="number" 
+                      placeholder="Enter Amount" 
+                      value={addAmount}
+                      onChange={e => setAddAmount(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                    />
+                    <button 
+                      onClick={async () => {
+                        if (!addAmount) return;
+                        setIsAdding(true);
+                        try {
+                          const response = await fetch('/dashboard/wallet/add', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json',
+                              'X-Requested-With': 'XMLHttpRequest',
+                              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            },
+                            body: JSON.stringify({ amount: addAmount }),
+                          });
+                          const data = await response.json();
+                          if (data.success && data.payment_url) {
+                            window.location.href = data.payment_url;
+                          } else {
+                            alert(data.message || 'Failed to initialize payment.');
+                          }
+                        } catch (err) {
+                          alert('Error initializing payment.');
+                        } finally {
+                          setIsAdding(false);
                         }
-                      } catch (err) {
-                        alert('Error initializing payment.');
-                      } finally {
-                        setIsAdding(false);
-                      }
-                    }}
-                    disabled={!addAmount || isAdding}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 w-full sm:w-auto disabled:opacity-50"
-                  >
-                    {isAdding ? 'Processing...' : 'Submit'}
-                  </button>
+                      }}
+                      disabled={!addAmount || isAdding}
+                      className="px-4 py-2 bg-yellow-400 text-blue-900 rounded-lg text-sm font-medium hover:bg-yellow-500 w-full sm:w-auto disabled:opacity-50"
+                    >
+                      {isAdding ? 'Processing...' : 'Submit'}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -160,13 +162,13 @@ export default function Dashboard({ auth }: DashboardProps) {
         {/* Main Content Grid */}
         <div className="px-4 sm:px-8 pb-8">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6">
-              <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-gray-100">Available Networks</h3>
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-blue-100">
+              <h3 className="text-lg font-semibold mb-6 text-blue-900">Available Networks</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* MTN Card */}
                 <div 
                   onClick={() => router.visit(route('product.single', { network: 'MTN' }))}
-                  className="cursor-pointer bg-gradient-to-br from-yellow-600 to-yellow-800 rounded-xl p-6 text-white hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="cursor-pointer bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 text-blue-900 hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
@@ -174,8 +176,8 @@ export default function Dashboard({ auth }: DashboardProps) {
                     </div>
                     <div>
                       <h4 className="text-xl font-bold">MTN</h4>
-                      <p className="text-white/80 text-sm">Data Bundles</p>
-                      <p className="text-white/60 text-xs mt-1">Click to view packages</p>
+                      <p className="text-blue-800 text-sm">Data Bundles</p>
+                      <p className="text-blue-700 text-xs mt-1">Click to view packages</p>
                     </div>
                   </div>
                 </div>
@@ -240,12 +242,12 @@ export default function Dashboard({ auth }: DashboardProps) {
           <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
             <button
               onClick={() => router.visit('/cart')}
-              className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-full p-4 shadow-2xl transform hover:scale-110 transition-all duration-300 animate-bounce"
+              className="relative bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 rounded-full p-4 shadow-2xl transform hover:scale-110 transition-all duration-300 animate-bounce"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
               </svg>
-              <span className="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+              <span className="absolute -top-2 -right-2 bg-blue-800 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
                 {cartCount}
               </span>
             </button>

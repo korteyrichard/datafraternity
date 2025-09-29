@@ -34,15 +34,12 @@ export default function ApiDocs({ auth }: Props) {
 
                 {/* Complaints Section */}
                 <div>
-                    <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Complaints</h2>
-                    <ol className="list-decimal space-y-2 pl-6 text-gray-700 dark:text-gray-300">
-                    <li>Complaints made after end of the day will not be accepted.</li>
-                    <li>
-                        You should report when order is delivered but not received after 2
-                        hours of placing the order.
-                    </li>
-                    <li>If order is pending no need to complain.</li>
-                    </ol>
+                    <p>
+                        *Please avoid advertising on social media platforms such as *Facebook*, 
+                        *Twitter*, *TikTok*, *Instagram*, and *public WhatsApp groups*. Going against this guideline could result in your
+                         account being suspended. Adhering to these rules 
+                        will ensure the longevity of our service and support all individuals who rely on this system for their livelihood. Thank you.
+                    </p>
                 </div>
 
       {/* Not Support Section */}
@@ -62,9 +59,7 @@ export default function ApiDocs({ auth }: Props) {
                     <li>Turbonet SIM</li>
                     </ol>
 
-                    <p className='font-bold mt-4 mb-4'>
-                        <span > NOTE:</span> Dealers with GHS 1,000.00 plus daily sales should contact admin for special role to access low prices
-                    </p>
+                    
                     <p className="mt-3 text-red-600 dark:text-red-400 font-medium">
                     Therefore do not place order for any of the above, if you do so the
                     order will not be delivered and you won't have any refund or

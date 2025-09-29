@@ -9,7 +9,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderPusherService;
-use App\Services\CodeCraftOrderPusherService;
 use Illuminate\Support\Facades\Log;
 use App\Models\Setting;
 
@@ -99,16 +98,13 @@ class OrderController extends Controller
             return $order;
         });
         
-        // Push order to external API based on network (if enabled)
+        // Push order to external API (if enabled)
         try {
-            if (strtolower($order->network) === 'mtn' && Setting::get('jaybart_order_pusher_enabled', 1)) {
-                $mtnOrderPusher = new OrderPusherService();
-                $mtnOrderPusher->pushOrderToApi($order);
-            } elseif (in_array(strtolower($order->network), ['telecel', 'ishare', 'bigtime']) && Setting::get('codecraft_order_pusher_enabled', 1)) {
-                $codeCraftOrderPusher = new CodeCraftOrderPusherService();
-                $codeCraftOrderPusher->pushOrderToApi($order);
+            if (Setting::get('order_pusher_enabled', 1)) {
+                $orderPusher = new OrderPusherService();
+                $orderPusher->pushOrderToApi($order);
             } else {
-                Log::info('Order pusher disabled for network - skipping API call', ['orderId' => $order->id, 'network' => $order->network]);
+                Log::info('Order pusher disabled - skipping API call', ['orderId' => $order->id, 'network' => $order->network]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to push order to external API', ['orderId' => $order->id, 'network' => $order->network, 'error' => $e->getMessage()]);

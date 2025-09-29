@@ -14,8 +14,16 @@ class BecomeAgentController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        if (!$user || $user->role !== 'customer') {
-            return back()->withErrors(['message' => 'Unable to become a dealer.']);
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['message' => 'Please login to become a dealer.']);
+        }
+        
+        if ($user->role === 'dealer' || $user->role === 'admin') {
+            return back()->withErrors(['message' => 'You are already a dealer or admin.']);
+        }
+        
+        if ($user->role !== 'customer') {
+            return back()->withErrors(['message' => 'Only customers can become dealers.']);
         }
 
         $reference = 'dealer_' . Str::random(16);
@@ -48,7 +56,7 @@ class BecomeAgentController extends Controller
         ])->post('https://api.paystack.co/transaction/initialize', [
             'email' => $user->email,
             'amount' => $totalAmount * 100, // Convert to kobo
-            'callback_url' => route('agent.callback'),
+            'callback_url' => route('dealer.callback'),
             'reference' => $reference,
             'metadata' => [
                 'user_id' => $user->id,

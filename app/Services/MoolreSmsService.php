@@ -25,7 +25,7 @@ class MoolreSmsService
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl, [
                 'type' => 1,
-                'senderid' => "DF-Ghana",
+                'senderid' => $this->senderId,
                 'messages' => [
                     [
                         'recipient' => $phoneNumber,

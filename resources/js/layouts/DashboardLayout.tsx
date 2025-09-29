@@ -65,10 +65,10 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
                 as={item.name === 'Log Out' ? 'button' : 'a'}
                 className={`
                     ${item.current
-                        ? 'bg-white/20 text-white'
-                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                        ? 'bg-yellow-400 text-blue-900 font-bold'
+                        : 'text-white/90 hover:bg-yellow-400/20 hover:text-yellow-400'
                     }
-                    group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full
+                    group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full transition-all duration-200
                 `}
                 onClick={closeSidebar ? () => setSidebarOpen(false) : undefined}
             >
@@ -79,11 +79,11 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
     };
 
     const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
-        <div className="flex flex-col flex-grow bg-gradient-to-br from-yellow-600 via-yellow-700 to-yellow-800 pt-5 pb-4 overflow-y-auto h-full">
+        <div className="flex flex-col flex-grow bg-blue-900 pt-5 pb-4 overflow-y-auto h-full">
             <div className="flex items-center flex-shrink-0 px-4">
                 <Link href="/">
                     <div className="text-white text-lg font-bold flex flex-row gap-4 items-center justify-between">
-                        <img src='/bulkdata.png' alt="Dataflow Logo" className="w-60 h-30 mb-4 mx-auto rounded-3xl " />
+                        <img src='/datafraternity.png' alt="Datafraternity Logo" className="w-60 h-30 mb-4 mx-auto rounded-3xl " />
                     </div>
                 </Link>
             </div>
@@ -92,7 +92,7 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
                     {renderNavigationItems(navigation, isMobile)}
                 </div>
 
-                <a href='https://wa.me/message/YDWRM6BLYFSRD1' className="w-[200px] ml-3 text-left mt-10 px-2 py-2 text-sm font-bold rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors">
+                <a href='https://wa.me/233548471118' className="w-[200px] ml-3 text-left mt-10 px-2 py-2 text-sm font-bold rounded-md text-blue-900 bg-yellow-400 hover:bg-yellow-500 transition-colors">
                     Contact Support
                 </a>
 
@@ -119,7 +119,7 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
             {/* Main content area */}
             <div className="lg:pl-64 flex flex-col flex-1">
                 {/* Navbar */}
-                <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-gradient-to-r from-yellow-600 via-yellow-700 to-yellow-800 shadow-sm lg:shadow-none">
+                <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-blue-900 shadow-sm lg:shadow-none">
                     <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
                         <SheetTrigger asChild>
                             <div className="flex items-center px-4 lg:hidden">
@@ -142,7 +142,7 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
                     <div className="flex-1 flex justify-between px-4">
                         <div className="flex-1 flex items-center">
                             {header && (
-                                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                                <h2 className="font-semibold text-xl text-white leading-tight">
                                     {header}
                                 </h2>
                             )}
@@ -181,7 +181,7 @@ export default function DashboardLayout({ user, header, children }: DashboardLay
                     </div>
                 </div>
 
-                <main className="flex-1 p-4">
+                <main className="flex-1 p-4 bg-white">
                     {children}
                 </main>
             </div>

@@ -173,10 +173,10 @@ export default function ApiDocs({ auth }: Props) {
                         </p>
                         <div className="flex items-center gap-2">
                             <code className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-2 rounded text-sm font-mono">
-                                https://dataflowghana.com/api/v1
+                                https://datafraternity.com/api/v1
                             </code>
                             <button
-                                onClick={() => navigator.clipboard.writeText('https://dataflowghana.com/api/v1')}
+                                onClick={() => navigator.clipboard.writeText('https://datafraternity.com/api/v1')}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
                             >
                                 Copy
@@ -194,7 +194,7 @@ export default function ApiDocs({ auth }: Props) {
                         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">Authentication</h3>
                         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                <strong>POST</strong> /api/v1/token/create
+                                <strong>POST</strong> /token/create
                             </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Generate API token</p>
                             <pre className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-x-auto">
@@ -237,13 +237,13 @@ BIGTIME: 12`}
                         <div className="space-y-4">
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/normal-orders
+                                    <strong>GET</strong> /normal-orders
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Get user's orders</p>
                             </div>
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>POST</strong> /api/v1/normal-orders
+                                    <strong>POST</strong> /normal-orders
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Create new order</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-500 mb-2">Request:</p>
@@ -289,19 +289,14 @@ BIGTIME: 12`}
                         <div className="space-y-4">
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/afa
+                                    <strong>GET</strong> /afa
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Get user's AFA orders</p>
                             </div>
+                            
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/afa/products
-                                </p>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Get available AFA products</p>
-                            </div>
-                            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>POST</strong> /api/v1/afa
+                                    <strong>POST</strong> /afa
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Create AFA order</p>
                                 <pre className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-x-auto">
@@ -325,7 +320,7 @@ BIGTIME: 12`}
                         <div className="space-y-4">
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/transactions
+                                    <strong>GET</strong> /transactions
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Get all orders with transactions for authenticated user</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-500 mb-2">Response includes orders with related transactions data</p>
@@ -349,7 +344,7 @@ BIGTIME: 12`}
                             </div>
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/transactions/&#123;id&#125;
+                                    <strong>GET</strong>/transactions/&#123;id&#125;
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Get single order by ID with transactions</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-500 mb-2">Returns 404 if order not found or doesn't belong to authenticated user</p>
@@ -371,7 +366,7 @@ BIGTIME: 12`}
                             </div>
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    <strong>GET</strong> /api/v1/transaction-status
+                                    <strong>GET</strong> /transaction-status
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Get transaction status</p>
                             </div>

@@ -10,20 +10,38 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Services\OrderPusherService;
-use App\Services\CodeCraftOrderPusherService;
 use App\Models\Setting;
 use App\Models\Transaction;
 
 class OrdersController extends Controller
 {
     // Display a listing of the user's orders
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         
-        $orders = Order::with(['products' => function($query) {
+        $query = Order::with(['products' => function($query) {
             $query->withPivot('quantity', 'price', 'beneficiary_number', 'product_variant_id');
-        }])->where('user_id', $user->id)->latest()->get();
+        }])->where('user_id', $user->id);
+        
+        // Apply beneficiary number filter
+        if ($request->filled('beneficiary_number')) {
+            $beneficiaryNumber = $request->get('beneficiary_number');
+            $query->where(function($q) use ($beneficiaryNumber) {
+                $q->where('beneficiary_number', 'like', '%' . $beneficiaryNumber . '%')
+                  ->orWhereHas('products', function($productQuery) use ($beneficiaryNumber) {
+                      $productQuery->wherePivot('beneficiary_number', 'like', '%' . $beneficiaryNumber . '%');
+                  });
+            });
+        }
+        
+        // Apply order ID filter
+        if ($request->filled('order_id')) {
+            $orderId = $request->get('order_id');
+            $query->where('id', 'like', '%' . $orderId . '%');
+        }
+        
+        $orders = $query->latest()->get();
         
         // Transform orders to include variant information
         $orders = $orders->map(function($order) {
@@ -65,6 +83,10 @@ class OrdersController extends Controller
             'todaySales' => $todaySales ?? 0,
             'pendingOrders' => $pendingOrdersCount ?? 0,
             'processingOrders' => $processingOrdersCount ?? 0,
+            'filters' => [
+                'beneficiary_number' => $request->get('beneficiary_number'),
+                'order_id' => $request->get('order_id'),
+            ],
         ]);
     }
 
@@ -151,24 +173,17 @@ class OrdersController extends Controller
             DB::commit();
             Log::info('Database transaction committed.');
 
-            // Push orders to external APIs based on network and individual service settings
-            $jaybartEnabled = (bool) Setting::get('jaybart_order_pusher_enabled', 1);
-            $codecraftEnabled = (bool) Setting::get('codecraft_order_pusher_enabled', 1);
+            // Push orders to external API
+            $orderPusherEnabled = (bool) Setting::get('order_pusher_enabled', 1);
             
             foreach ($createdOrders as $order) {
                 try {
-                    if (strtolower($order->network) === 'mtn' && $jaybartEnabled) {
-                        $mtnOrderPusher = new OrderPusherService();
-                        $mtnOrderPusher->pushOrderToApi($order);
-                        Log::info('Order pushed to Jaybart API', ['orderId' => $order->id, 'network' => $order->network]);
-                    } elseif (in_array(strtolower($order->network), ['telecel', 'ishare', 'bigtime']) && $codecraftEnabled) {
-                        $codeCraftOrderPusher = new CodeCraftOrderPusherService();
-                        $codeCraftOrderPusher->pushOrderToApi($order);
-                        Log::info('Order pushed to CodeCraft API', ['orderId' => $order->id, 'network' => $order->network]);
+                    if ($orderPusherEnabled) {
+                        $orderPusher = new OrderPusherService();
+                        $orderPusher->pushOrderToApi($order);
+                        Log::info('Order pushed to API', ['orderId' => $order->id, 'network' => $order->network]);
                     } else {
-                        $service = strtolower($order->network) === 'mtn' ? 'Jaybart' : 'CodeCraft';
-                        $enabled = strtolower($order->network) === 'mtn' ? $jaybartEnabled : $codecraftEnabled;
-                        Log::info('Order pusher disabled for service', ['orderId' => $order->id, 'network' => $order->network, 'service' => $service, 'enabled' => $enabled]);
+                        Log::info('Order pusher disabled', ['orderId' => $order->id, 'network' => $order->network]);
                     }
                 } catch (\Exception $e) {
                     Log::error('Failed to push order to external API', ['orderId' => $order->id, 'network' => $order->network, 'error' => $e->getMessage()]);

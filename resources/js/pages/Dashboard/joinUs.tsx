@@ -30,7 +30,7 @@ export default function JoinUs({ auth }: PageProps) {
                                 </h3>
                             </div>
                             <a
-                                href="https://whatsapp.com/channel/0029VagHPxD8V0tjZXg3M80D"
+                                href=" https://chat.whatsapp.com/DHaCb6BlUmP4TVShpNWoKO?mode=ems_wa_t"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-block mt-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-md font-medium"

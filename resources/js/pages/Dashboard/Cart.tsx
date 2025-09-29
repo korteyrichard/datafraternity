@@ -43,11 +43,11 @@ export default function Cart() {
     >
       <Head title="Cart" />
       
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8 lg:py-12">
+      <div className="min-h-screen bg-white py-4 sm:py-8 lg:py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100">
             {/* Header */}
-            <div className="bg-gradient-to-r from-yellow-600 to-yellow-700 px-4 sm:px-6 lg:px-8 py-6">
+            <div className="bg-blue-900 px-4 sm:px-6 lg:px-8 py-6">
               <h3 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
                 <Icon name="ShoppingCart" className="w-7 h-7 sm:w-8 sm:h-8" />
                 Your Cart
@@ -71,7 +71,7 @@ export default function Cart() {
                   </p>
                   <Button 
                     onClick={() => router.visit('/dashboard')}
-                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-200"
+                    className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 px-6 py-3 rounded-xl shadow-lg transition-all duration-200"
                   >
                     Browse Products
                   </Button>
@@ -105,7 +105,7 @@ export default function Cart() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
                             <span className="px-3 py-1 rounded-lg text-sm font-semibold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30">
-                              {item.quantity}GB
+                              {item.quantity}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
@@ -161,7 +161,7 @@ export default function Cart() {
                           </td>
                           <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
                             <span className="px-2 py-1 rounded-lg text-xs font-semibold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30">
-                              {item.quantity}GB
+                              {item.quantity}
                             </span>
                           </td>
                           <td className="px-3 py-3 text-right border-r border-gray-400 dark:border-gray-600">

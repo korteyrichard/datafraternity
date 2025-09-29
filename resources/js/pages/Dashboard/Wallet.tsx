@@ -147,12 +147,14 @@ export default function Wallet({ auth, transactions }: WalletPageProps) {
               GHS {auth.user.wallet_balance}
             </p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-100 w-full sm:w-auto font-semibold"
-          >
-            Top Up Wallet
-          </button>
+          {auth.user.role !== 'dealer' && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-white text-green-600 px-4 py-2 rounded hover:bg-gray-100 w-full sm:w-auto font-semibold"
+            >
+              Top Up Wallet
+            </button>
+          )}
         </div>
 
         {/* Transactions Table */}

@@ -19,14 +19,14 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::get('/become_an_agent', function () {
+Route::get('/become_a_dealer', function () {
         return Inertia::render('become_an_agent');
-    })->name('become_an_agent');
+    })->name('become_a_dealer');
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/become_an_agent', [BecomeAgentController::class, 'update'])->name('become_an_agent.update');
+    Route::post('/become_a_dealer', [BecomeAgentController::class, 'update'])->name('become_a_dealer.update');
 });
-Route::get('/agent/callback', [BecomeAgentController::class, 'handleAgentCallback'])->name('agent.callback');
+Route::get('/dealer/callback', [BecomeAgentController::class, 'handleAgentCallback'])->name('dealer.callback');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -97,8 +97,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->name('admin.')->group(fun
     Route::delete('admin/afa-products/{afaProduct}', [\App\Http\Controllers\Admin\AFAProductController::class, 'destroy'])->name('afa-products.destroy');
     Route::get('admin/afa-orders', [\App\Http\Controllers\AdminDashboardController::class, 'afaOrders'])->name('afa-orders');
     Route::put('admin/afa-orders/{order}/status', [\App\Http\Controllers\AdminDashboardController::class, 'updateAfaOrderStatus'])->name('afa.orders.updateStatus');
-    Route::post('admin/toggle-jaybart-order-pusher', [\App\Http\Controllers\AdminDashboardController::class, 'toggleJaybartOrderPusher'])->name('toggle.jaybart.order.pusher');
-    Route::post('admin/toggle-codecraft-order-pusher', [\App\Http\Controllers\AdminDashboardController::class, 'toggleCodecraftOrderPusher'])->name('toggle.codecraft.order.pusher');
+    Route::post('admin/toggle-order-pusher', [\App\Http\Controllers\AdminDashboardController::class, 'toggleOrderPusher'])->name('toggle.order.pusher');
 });
 
 // Paystack payment routes

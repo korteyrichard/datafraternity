@@ -31,14 +31,20 @@ interface OrdersPageProps {
   todaySales: number;
   pendingOrders: number;
   processingOrders: number;
+  filters: {
+    beneficiary_number?: string;
+    order_id?: string;
+  };
   [key: string]: any;
 }
 
 export default function OrdersPage() {
-  const { orders, auth, totalSales, todaySales, pendingOrders, processingOrders } = usePage<OrdersPageProps>().props;
+  const { orders, auth, totalSales, todaySales, pendingOrders, processingOrders, filters } = usePage<OrdersPageProps>().props;
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
   const [networkFilter, setNetworkFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [beneficiaryFilter, setBeneficiaryFilter] = useState(filters?.beneficiary_number || '');
+  const [orderIdFilter, setOrderIdFilter] = useState(filters?.order_id || '');
 
   // Extract unique networks and statuses for filter dropdowns
   const networks = Array.from(new Set(orders.map(o => o.network).filter(Boolean)));
@@ -47,7 +53,11 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesNetwork = !networkFilter || order.network === networkFilter;
     const matchesStatus = !statusFilter || order.status === statusFilter;
-    return matchesNetwork && matchesStatus;
+    const matchesBeneficiary = !beneficiaryFilter || 
+      (order.beneficiary_number && order.beneficiary_number.includes(beneficiaryFilter)) ||
+      order.products.some(product => product.pivot?.beneficiary_number?.includes(beneficiaryFilter));
+    const matchesOrderId = !orderIdFilter || order.id.toString().includes(orderIdFilter);
+    return matchesNetwork && matchesStatus && matchesBeneficiary && matchesOrderId;
   });
 
   const handleExpand = (orderId: number) => {
@@ -94,13 +104,13 @@ export default function OrdersPage() {
           {/* Stats Cards */}
           <div className="mb-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg p-4">
+              <div className="bg-blue-900 rounded-lg shadow-lg p-4">
                 <p className="text-white/80 text-sm">Total Sales</p>
                 <p className="text-xl font-bold text-white">GHS {totalSales}</p>
               </div>
-              <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-lg p-4">
-                <p className="text-white/80 text-sm">Today's Sales</p>
-                <p className="text-xl font-bold text-white">GHS {todaySales}</p>
+              <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg shadow-lg p-4">
+                <p className="text-blue-900 text-sm">Today's Sales</p>
+                <p className="text-xl font-bold text-blue-900">GHS {todaySales}</p>
               </div>
               <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg p-4">
                 <p className="text-white/80 text-sm">Pending Orders</p>
@@ -112,12 +122,12 @@ export default function OrdersPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+          <div className="bg-white shadow rounded-lg overflow-hidden border border-blue-100">
             
             {/* Filter Section */}
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-              <div className="flex flex-row gap-4">
-                <div className="flex-1">
+            <div className="p-4 bg-blue-50 border-b border-blue-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Network:</label>
                   <select
                     className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800"
@@ -131,7 +141,7 @@ export default function OrdersPage() {
                   </select>
                 </div>
                 
-                <div className="flex-1">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status:</label>
                   <select
                     className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800"
@@ -144,13 +154,35 @@ export default function OrdersPage() {
                     ))}
                   </select>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Beneficiary Number:</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800"
+                    placeholder="Search by beneficiary number"
+                    value={beneficiaryFilter}
+                    onChange={e => setBeneficiaryFilter(e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order ID:</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800"
+                    placeholder="Search by order ID"
+                    value={orderIdFilter}
+                    onChange={e => setOrderIdFilter(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
             {filteredOrders.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-gray-400 dark:text-gray-500 text-lg mb-2">No orders found</div>
-                <div className="text-gray-500 dark:text-gray-400 text-sm">Try adjusting your filters or place your first order</div>
+                <div className="text-blue-400 text-lg mb-2">No orders found</div>
+                <div className="text-blue-500 text-sm">Try adjusting your filters or place your first order</div>
               </div>
             ) : (
               <>
