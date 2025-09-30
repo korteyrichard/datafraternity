@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class OrderStatusSyncService
 {
-    private $jaybartApiKey = 'YOUR API KEY';
+    private $jaybartApiKey = '';
 
     public function syncOrderStatuses()
     {

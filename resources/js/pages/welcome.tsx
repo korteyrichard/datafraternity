@@ -41,7 +41,7 @@ export default function Welcome() {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between items-center py-4">
                             <div className="text-2xl  text-yellow-500 font-black  bg-clip-text ">
-                              <img src='/datafraternity.png' alt="Data Fraternity Logo" className="w-60 h-20 mb-4 mx-auto rounded-3xl" />
+                              <img src='/datafraternity.png' alt="Data Fraternity Logo" className="w-60 h-30 mb-4 mx-auto rounded-3xl" />
                             </div>
                             {/* Hamburger for mobile */}
                             <button
@@ -96,21 +96,21 @@ export default function Welcome() {
                                     <>
                                         <Link
                                             href={route('register')}
-                                            className="block px-6 py-3 text-gray-700 font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
+                                            className="block px-6 py-3 text-white font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
                                             onClick={() => setNavOpen(false)}
                                         >
                                             Register
                                         </Link>
                                         <Link
                                             href={route('login')}
-                                            className="block px-6 py-3 text-gray-700 font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-yellow-600 hover:to-yellow-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
+                                            className="block px-6 py-3 text-white font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-yellow-600 hover:to-yellow-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
                                             onClick={() => setNavOpen(false)}
                                         >
                                             Login
                                         </Link>
                                         <a
-                                            href="https://whatsapp.com/channel/0029VagHPxD8V0tjZXg3M80D"
-                                            className="block px-6 py-3 text-gray-700 font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-yellow-600 hover:to-yellow-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
+                                            href="https://chat.whatsapp.com/DHaCb6BlUmP4TVShpNWoKO?mode=ems_wa_t"
+                                            className="block px-6 py-3 text-white font-medium rounded-full text-center hover:bg-gradient-to-r hover:from-yellow-600 hover:to-yellow-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300"
                                             onClick={() => setNavOpen(false)}
                                         >
                                             Join Community
@@ -123,7 +123,7 @@ export default function Welcome() {
                 </nav>
 
                 {/* Hero Section */}
-                <section className="min-h-screen flex items-center justify-center text-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                <section className="min-h-screen flex items-center justify-center text-center mt-5 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-30">
                         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"></div>

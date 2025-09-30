@@ -28,7 +28,9 @@ export default function Login() {
             <div className="w-full max-w-sm">
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <div className="flex flex-col items-center mb-8">
-                        <img src='/datafraternity.png' alt="Logo" className="w-60 h-30 mb-6 rounded-lg" />
+                        <div className="bg-blue-900 p-4 rounded-lg mb-6">
+                            <img src='/datafraternity.png' alt="Logo" className="w-52 h-auto" />
+                        </div>
                     </div>
                     <form onSubmit={submit} className="space-y-4">
                         <div>
