@@ -144,14 +144,19 @@ class DashboardController extends Controller
         $user = auth()->user();
         $reference = 'wallet_' . Str::random(16);
         
+        // Calculate 1% transaction fee
+        $originalAmount = $request->amount;
+        $transactionFee = $originalAmount * 0.01;
+        $totalAmount = $originalAmount + $transactionFee;
+        
         // Store pending transaction
         $transaction = Transaction::create([
             'user_id' => $user->id,
             'order_id' => null,
-            'amount' => $request->amount,
+            'amount' => $originalAmount,
             'status' => 'pending',
             'type' => 'topup',
-            'description' => 'Wallet top-up of GHS ' . number_format($request->amount, 2),
+            'description' => 'Wallet top-up of GHS ' . number_format($originalAmount, 2) . ' (Fee: GHS ' . number_format($transactionFee, 2) . ')',
             'reference' => $reference,
         ]);
         
@@ -161,14 +166,15 @@ class DashboardController extends Controller
             'Content-Type' => 'application/json',
         ])->post('https://api.paystack.co/transaction/initialize', [
             'email' => $user->email,
-            'amount' => $request->amount * 100, // Convert to kobo
+            'amount' => $totalAmount * 100, // Convert to kobo (includes 1% fee)
             'callback_url' => route('wallet.callback'),
             'reference' => $reference,
             'metadata' => [
                 'user_id' => $user->id,
                 'transaction_id' => $transaction->id,
                 'type' => 'wallet_topup',
-                'actual_amount' => $request->amount
+                'actual_amount' => $originalAmount,
+                'transaction_fee' => $transactionFee
             ]
         ]);
 

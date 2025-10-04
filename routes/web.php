@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Wallet balance route
     Route::post('/dashboard/wallet/add', [DashboardController::class, 'addToWallet'])->name('dashboard.wallet.add');
     Route::get('/wallet/callback', [DashboardController::class, 'handleWalletCallback'])->name('wallet.callback');
+    Route::post('/dashboard/wallet/verify', [WalletController::class, 'verifyPayment'])->name('dashboard.wallet.verify');
     
     // Bundle sizes API
     Route::get('/api/bundle-sizes', [DashboardController::class, 'getBundleSizes'])->name('api.bundle-sizes');

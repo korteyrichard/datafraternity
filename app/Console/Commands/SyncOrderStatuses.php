@@ -14,8 +14,7 @@ class SyncOrderStatuses extends Command
     {
         $this->info('Starting order status sync...');
         
-        $smsService = app(\App\Services\MoolreSmsService::class);
-        $syncService = new OrderStatusSyncService($smsService);
+        $syncService = new OrderStatusSyncService();
         $syncService->syncOrderStatuses();
         
         $this->info('Order status sync completed.');

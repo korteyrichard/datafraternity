@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class OrderPusherService
 {
-    private $baseUrl = 'YOUR BASE URL';
-    private $apiKey = 'YOUR API KEY';
+    private $baseUrl = '';
+    private $apiKey = '';
 
     public function pushOrderToApi(Order $order)
     {
@@ -66,6 +66,17 @@ class OrderPusherService
                     'status_code' => $response->status(),
                     'body' => $response->body()
                 ]);
+
+                if ($response->successful()) {
+                    $responseData = $response->json();
+                    if (isset($responseData['transaction_code'])) {
+                        $order->update(['reference_id' => $responseData['transaction_code']]);
+                        Log::info('Reference ID saved', [
+                            'order_id' => $order->id,
+                            'reference_id' => $responseData['transaction_code']
+                        ]);
+                    }
+                }
 
             } catch (\Exception $e) {
                 Log::error('API Error', ['message' => $e->getMessage()]);

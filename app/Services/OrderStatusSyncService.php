@@ -8,11 +8,18 @@ use Illuminate\Support\Facades\Log;
 
 class OrderStatusSyncService
 {
-    private $jaybartApiKey = '';
+    private $jaybartApiKey;
+    private $moolreSmsService;
+
+    public function __construct()
+    {
+        $this->jaybartApiKey = '';
+        $this->moolreSmsService = new MoolreSmsService();
+    }
 
     public function syncOrderStatuses()
     {
-        $processingOrders = Order::whereIn('status', ['pending', 'processing'])->get();
+        $processingOrders = Order::whereIn('status', ['pending', 'processing'])->with('user')->get();
         
         foreach ($processingOrders as $order) {
             try {
@@ -77,13 +84,29 @@ class OrderStatusSyncService
                 ]);
                 
                 if ($newStatus && $newStatus !== $order->status) {
+                    $oldStatus = $order->status;
                     $updateResult = $order->update(['status' => $newStatus]);
                     Log::info('Jaybart order status updated', [
                         'orderId' => $order->id, 
-                        'oldStatus' => $order->status, 
+                        'oldStatus' => $oldStatus, 
                         'newStatus' => $newStatus,
                         'update_successful' => $updateResult
                     ]);
+                    
+                    // Send SMS notification if order is completed
+                    if ($newStatus === 'completed' && $order->user && $order->user->phone) {
+                        try {
+                            $message = "Your order #{$order->id} for {$order->network} data has been completed successfully. Thank you for using DataFraternity!";
+                            $smsResult = $this->moolreSmsService->sendSms($order->user->phone, $message);
+                            Log::info('SMS notification sent for completed order', [
+                                'order_id' => $order->id,
+                                'phone' => $order->user->phone,
+                                'sms_success' => $smsResult
+                            ]);
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send SMS notification', ['order_id' => $order->id, 'error' => $e->getMessage()]);
+                        }
+                    }
                 } else {
                     Log::info('Jaybart order status unchanged', [
                         'order_id' => $order->id,

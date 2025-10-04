@@ -67,7 +67,7 @@ export default function AdminOrders() {
     dailyTotalSales,
   } = usePage<AdminOrdersPageProps>().props;
 
-  const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+
   const [networkFilter, setNetworkFilter] = useState(initialNetworkFilter);
   const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
   const [searchOrderId, setSearchOrderId] = useState(initialSearchOrderId);
@@ -97,21 +97,29 @@ export default function AdminOrders() {
     router.get(route('admin.orders'), newFilters, { preserveState: true, replace: true });
   };
 
-  const handleExpand = (orderId: number) => {
-    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+
+
+  const getNetworkBadgeColor = (network?: string) => {
+    if (!network) return 'bg-gray-200 text-gray-700';
+    if (network.toLowerCase() === 'telecel') return 'bg-red-200 text-red-700';
+    if (network.toLowerCase() === 'mtn') return 'bg-yellow-200 text-yellow-700';
+    if (network.toLowerCase().includes('bigtime') || network.toLowerCase().includes('ishare') || network.toLowerCase().includes('at data') || network.toLowerCase().includes('at (big')) return 'bg-blue-200 text-blue-700';
+    return 'bg-purple-200 text-purple-700';
   };
 
-  const getNetworkColor = (network?: string) => {
-    if (!network) return 'bg-gray-200 text-gray-700';
-    const map: Record<string, string> = {
-      telecel: 'bg-red-100 text-red-700',
-      mtn: 'bg-yellow-100 text-yellow-800',
-      bigtime: 'bg-blue-100 text-blue-700',
-      ishare: 'bg-blue-100 text-blue-700',
-      'at data (instant)': 'bg-blue-100 text-blue-700',
-      'at (big packages)': 'bg-blue-100 text-blue-700',
-    };
-    return map[network.toLowerCase()] || 'bg-gray-200 text-gray-700';
+  const getStatusBadgeColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'bg-green-200 text-green-700';
+      case 'pending':
+        return 'bg-orange-200 text-orange-700';
+      case 'failed':
+        return 'bg-red-200 text-red-700';
+      case 'processing':
+        return 'bg-blue-200 text-blue-700';
+      default:
+        return 'bg-gray-200 text-gray-700';
+    }
   };
 
   const handleDeleteOrder = (orderId: number) => {
@@ -292,113 +300,194 @@ export default function AdminOrders() {
         </div>
 
         {/* Orders Table */}
-        {orders.data.length === 0 ? (
-          <div className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 p-6 rounded-xl text-center shadow-md">
-            No orders found for the selected filters.
-          </div>
-        ) : (
-          <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-            <table className="min-w-[600px] w-full text-sm text-left text-gray-700 dark:text-gray-300">
-              <thead className="uppercase text-xs bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
-                <tr>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4 w-12">
-                    <input
-                      type="checkbox"
-                      checked={selectedOrders.length === orders.data.length && orders.data.length > 0}
-                      onChange={handleSelectAll}
-                      className="rounded border-gray-300 dark:border-gray-600"
-                    />
-                  </th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">Order #</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">User</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">Date</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">Network</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">Status</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4">Total</th>
-                  <th className="px-3 sm:px-5 py-3 sm:py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.data.map((order) => (
-                  <React.Fragment key={order.id}>
-                    <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 border-t border-gray-200 dark:border-gray-700 transition">
-                      <td className="px-3 sm:px-5 py-3 sm:py-4">
+        <div className="bg-white shadow rounded-lg overflow-hidden border border-blue-100">
+          {orders.data.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-blue-400 text-lg mb-2">No orders found</div>
+              <div className="text-blue-500 text-sm">Try adjusting your filters</div>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="overflow-x-auto hidden lg:block">
+                <table className="min-w-full divide-y divide-gray-400 dark:divide-gray-600 border border-gray-400 dark:border-gray-600">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-gray-800">
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">
                         <input
                           type="checkbox"
-                          checked={selectedOrders.includes(order.id)}
-                          onChange={() => handleSelectOrder(order.id)}
+                          checked={selectedOrders.length === orders.data.length && orders.data.length > 0}
+                          onChange={handleSelectAll}
                           className="rounded border-gray-300 dark:border-gray-600"
                         />
-                      </td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4 font-semibold">{order.id}</td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4">
-                        <div className="text-sm">
-                          <div className="font-medium">{order.user?.name || 'Unknown User'}</div>
-                          <div className="text-gray-500 text-xs">{order.user?.email || 'No email'}</div>
-                        </div>
-                      </td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4 whitespace-nowrap">{new Date(order.created_at).toLocaleString()}</td>
-                      <td className={`px-3 sm:px-5 py-3 sm:py-4 rounded ${getNetworkColor(order.network)} font-medium`}>
-                        {order.network || '-'}
-                      </td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4">
-                        <select
-                          className="px-2 py-1 rounded-md text-xs dark:bg-gray-800 bg-gray-100"
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                      </td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4 font-semibold">GHS {order.total}</td>
-                      <td className="px-3 sm:px-5 py-3 sm:py-4 text-right space-x-2 sm:space-x-3">
-                        <button
-                          onClick={() => handleExpand(order.id)}
-                          className="text-blue-600 dark:text-blue-400 hover:underline text-xs sm:text-sm"
-                        >
-                          {expandedOrder === order.id ? 'Hide' : 'Details'}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteOrder(order.id)}
-                          className="text-red-500 hover:underline text-xs sm:text-sm"
-                        >
-                          Delete
-                        </button>
-                      </td>
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Order ID</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">User</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Date & Time</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Network</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Beneficiary</th>
+                      <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Total</th>
+                      <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                     </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
+                    {orders.data.map((order) => (
+                        <tr key={order.id} className="hover:bg-blue-50 dark:hover:bg-gray-800 transition-all duration-200">
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <input
+                              type="checkbox"
+                              checked={selectedOrders.includes(order.id)}
+                              onChange={() => handleSelectOrder(order.id)}
+                              className="rounded border-gray-300 dark:border-gray-600"
+                            />
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">#{order.id}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm">
+                              <div className="font-medium text-gray-900 dark:text-gray-100">{order.user?.name || 'Unknown User'}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{order.user?.email || 'No email'}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm text-gray-700 dark:text-gray-200">
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(order.created_at).toLocaleTimeString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${getNetworkBadgeColor(order.network)}`}>
+                              {order.network || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <select
+                              className="px-2 py-1 rounded-md text-xs dark:bg-gray-800 bg-gray-100"
+                              value={order.status}
+                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="processing">Processing</option>
+                              <option value="completed">Completed</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm text-gray-700 dark:text-gray-200">
+                              {order.products[0]?.pivot?.beneficiary_number || order.beneficiary_number || '-'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                              GHS {order.total.toLocaleString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <button
+                              onClick={() => handleDeleteOrder(order.id)}
+                              className="text-red-500 hover:underline text-xs"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                    {expandedOrder === order.id && (
-                      <tr className="bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-700">
-                        <td colSpan={8} className="px-3 sm:px-6 py-4 sm:py-5">
-                          <div className="space-y-2 text-xs sm:text-sm">
-                            <p><strong>Status:</strong> {order.status}</p>
-                            <p><strong>Products:</strong></p>
-                            <ul className="list-disc pl-4 sm:pl-5 space-y-1">
-                              {order.products?.map((product) => (
-                                <li key={product?.id || Math.random()} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
-                                  <span>
-                                    {product?.name || 'Unknown Product'}{product?.size ? ` (${product.size})` : ''} - GHS {product?.pivot?.price || '0.00'}
-                                  </span>
-                                  <span className="text-xs text-gray-600 dark:text-gray-400">
-                                    Beneficiary: {product?.pivot?.beneficiary_number || '-'}
-                                  </span>
-                                </li>
-                              )) || []}
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              {/* Mobile Table */}
+              <div className="lg:hidden overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-400 dark:divide-gray-600 border border-gray-400 dark:border-gray-600">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-gray-800">
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={selectedOrders.length === orders.data.length && orders.data.length > 0}
+                          onChange={handleSelectAll}
+                          className="rounded border-gray-300 dark:border-gray-600"
+                        />
+                      </th>
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Order</th>
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Network</th>
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Status</th>
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Beneficiary</th>
+                      <th className="px-3 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
+                    {orders.data.map((order) => (
+                        <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <input
+                              type="checkbox"
+                              checked={selectedOrders.includes(order.id)}
+                              onChange={() => handleSelectOrder(order.id)}
+                              className="rounded border-gray-300 dark:border-gray-600"
+                            />
+                          </td>
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">#{order.id}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(order.created_at).toLocaleTimeString()}
+                            </div>
+                            <div className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                              {order.user?.name || 'Unknown User'}
+                            </div>
+                          </td>
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${getNetworkBadgeColor(order.network)}`}>
+                              {order.network || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <select
+                              className="px-2 py-1 rounded-md text-xs dark:bg-gray-800 bg-gray-100 w-full"
+                              value={order.status}
+                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="processing">Processing</option>
+                              <option value="completed">Completed</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <div className="text-xs text-gray-700 dark:text-gray-200">
+                              {order.products[0]?.pivot?.beneficiary_number || order.beneficiary_number || '-'}
+                            </div>
+                          </td>
+                          <td className="px-3 py-3 text-right">
+                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                              GHS {order.total.toLocaleString()}
+                            </div>
+                            <div className="mt-1">
+                              <button
+                                onClick={() => handleDeleteOrder(order.id)}
+                                className="text-red-500 hover:underline text-xs"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
         
         {/* Pagination */}
         <Pagination data={orders} />
