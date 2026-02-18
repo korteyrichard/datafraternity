@@ -21,56 +21,16 @@ class AdminDashboardController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        $products = Product::with('variants')->get();
-        $orders = Order::with(['products' => function($query) {
-            $query->withPivot('quantity', 'price', 'beneficiary_number', 'product_variant_id');
-        }])->get();
-        
-        // Transform orders to include variant information
-        $orders = $orders->map(function($order) {
-            $order->products = $order->products->map(function($product) {
-                if ($product->pivot->product_variant_id) {
-                    $variant = \App\Models\ProductVariant::find($product->pivot->product_variant_id);
-                    if ($variant && isset($variant->variant_attributes['size'])) {
-                        $product->size = strtoupper($variant->variant_attributes['size']);
-                    }
-                }
-                return $product;
-            });
-            return $order;
-        });
-        $transactions = Transaction::all();
-
         $today = now()->today();
-        $todayUsers = User::whereDate('created_at', $today)->get();
-        $todayOrders = Order::with(['products' => function($query) {
-            $query->withPivot('quantity', 'price', 'beneficiary_number', 'product_variant_id');
-        }])->whereDate('created_at', $today)->get();
-        
-        // Transform today's orders to include variant information
-        $todayOrders = $todayOrders->map(function($order) {
-            $order->products = $order->products->map(function($product) {
-                if ($product->pivot->product_variant_id) {
-                    $variant = \App\Models\ProductVariant::find($product->pivot->product_variant_id);
-                    if ($variant && isset($variant->variant_attributes['size'])) {
-                        $product->size = strtoupper($variant->variant_attributes['size']);
-                    }
-                }
-                return $product;
-            });
-            return $order;
-        });
-        $todayTransactions = Transaction::whereDate('created_at', $today)->get();
 
         return Inertia::render('Admin/Dashboard', [
-            'users' => $users,
-            'products' => $products,
-            'orders' => $orders,
-            'transactions' => $transactions,
-            'todayUsers' => $todayUsers,
-            'todayOrders' => $todayOrders,
-            'todayTransactions' => $todayTransactions,
+            'usersCount' => User::count(),
+            'productsCount' => Product::count(),
+            'ordersCount' => Order::count(),
+            'transactionsCount' => Transaction::count(),
+            'todayUsersCount' => User::whereDate('created_at', $today)->count(),
+            'todayOrdersCount' => Order::whereDate('created_at', $today)->count(),
+            'todayTransactionsCount' => Transaction::whereDate('created_at', $today)->count(),
             'orderPusherEnabled' => (bool) Setting::get('order_pusher_enabled', 1),
         ]);
     }

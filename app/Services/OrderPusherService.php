@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class OrderPusherService
 {
-    private $baseUrl = '';
-    private $apiKey = '';
+    private $baseUrl = 'https://agent.jaybartservices.com/api/v1';
+    private $apiKey = '51bc09462b888aca48f9ec47090eebdd7fa0baf1';
 
     public function pushOrderToApi(Order $order)
     {
@@ -17,6 +17,9 @@ class OrderPusherService
         
         $items = $order->products()->withPivot('quantity', 'price', 'beneficiary_number', 'product_variant_id')->get();
         Log::info('Order has items', ['count' => $items->count()]);
+        
+        $hasSuccessfulResponse = false;
+        $hasFailedResponse = false;
 
         foreach ($items as $item) {
             Log::info('Processing item', ['name' => $item->name]);
@@ -35,6 +38,7 @@ class OrderPusherService
 
             if (empty($beneficiaryPhone)) {
                 Log::warning('No beneficiary phone found for item, skipping');
+                $hasFailedResponse = true;
                 continue;
             }
 
@@ -43,6 +47,7 @@ class OrderPusherService
                     'order_id' => $order->id,
                     'item_id' => $item->id
                 ]);
+                $hasFailedResponse = true;
                 continue;
             }
 
@@ -76,11 +81,22 @@ class OrderPusherService
                             'reference_id' => $responseData['transaction_code']
                         ]);
                     }
+                    $hasSuccessfulResponse = true;
+                } else {
+                    $hasFailedResponse = true;
                 }
 
             } catch (\Exception $e) {
                 Log::error('API Error', ['message' => $e->getMessage()]);
+                $hasFailedResponse = true;
             }
+        }
+        
+        // Update API status based on results
+        if ($hasSuccessfulResponse && !$hasFailedResponse) {
+            $order->update(['api_status' => 'success']);
+        } elseif ($hasFailedResponse) {
+            $order->update(['api_status' => 'failed']);
         }
     }
     

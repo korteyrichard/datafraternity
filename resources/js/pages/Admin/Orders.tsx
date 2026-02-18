@@ -22,6 +22,7 @@ interface Order {
   created_at: string;
   network?: string;
   beneficiary_number?: string;
+  api_status?: string;
   products: Product[];
   user: {
     id: number;
@@ -326,8 +327,9 @@ export default function AdminOrders() {
                       <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Date & Time</th>
                       <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Network</th>
                       <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Status</th>
+                      <th className="px-3 py-4 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600 w-24">API Status</th>
                       <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Beneficiary</th>
-                      <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600">Total</th>
+                      <th className="px-3 py-4 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-400 dark:border-gray-600 w-20">Size</th>
                       <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
@@ -377,14 +379,23 @@ export default function AdminOrders() {
                               <option value="cancelled">Cancelled</option>
                             </select>
                           </td>
+                          <td className="px-3 py-4 whitespace-nowrap text-center border-r border-gray-400 dark:border-gray-600 w-24">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              order.api_status === 'success' ? 'bg-green-200 text-green-700' :
+                              order.api_status === 'failed' ? 'bg-red-200 text-red-700' :
+                              'bg-gray-200 text-gray-700'
+                            }`}>
+                              {order.api_status || 'disabled'}
+                            </span>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap border-r border-gray-400 dark:border-gray-600">
                             <div className="text-sm text-gray-700 dark:text-gray-200">
                               {order.products[0]?.pivot?.beneficiary_number || order.beneficiary_number || '-'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right border-r border-gray-400 dark:border-gray-600">
-                            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                              GHS {order.total.toLocaleString()}
+                          <td className="px-3 py-4 whitespace-nowrap text-center border-r border-gray-400 dark:border-gray-600 w-20">
+                            <div className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                              {order.products[0]?.size || 'N/A'}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -417,8 +428,9 @@ export default function AdminOrders() {
                       <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Order</th>
                       <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Network</th>
                       <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Status</th>
+                      <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">API Status</th>
                       <th className="px-3 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-400 dark:border-gray-600">Beneficiary</th>
-                      <th className="px-3 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Total</th>
+                      <th className="px-3 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Size</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
@@ -463,13 +475,22 @@ export default function AdminOrders() {
                             </select>
                           </td>
                           <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              order.api_status === 'success' ? 'bg-green-200 text-green-700' :
+                              order.api_status === 'failed' ? 'bg-red-200 text-red-700' :
+                              'bg-gray-200 text-gray-700'
+                            }`}>
+                              {order.api_status || 'disabled'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-3 border-r border-gray-400 dark:border-gray-600">
                             <div className="text-xs text-gray-700 dark:text-gray-200">
                               {order.products[0]?.pivot?.beneficiary_number || order.beneficiary_number || '-'}
                             </div>
                           </td>
                           <td className="px-3 py-3 text-right">
                             <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                              GHS {order.total.toLocaleString()}
+                              {order.products[0]?.size || 'N/A'}
                             </div>
                             <div className="mt-1">
                               <button

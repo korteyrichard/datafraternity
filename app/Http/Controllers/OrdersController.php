@@ -140,6 +140,7 @@ class OrdersController extends Controller
                     'total' => $itemTotal,
                     'beneficiary_number' => $item->beneficiary_number,
                     'network' => $network,
+                    'api_status' => 'disabled',
                 ]);
                 Log::info('Order created for cart item.', ['orderId' => $order->id, 'network' => $network, 'total' => $itemTotal, 'beneficiaryNumber' => $item->beneficiary_number]);
 
@@ -183,9 +184,11 @@ class OrdersController extends Controller
                         $orderPusher->pushOrderToApi($order);
                         Log::info('Order pushed to API', ['orderId' => $order->id, 'network' => $order->network]);
                     } else {
+                        $order->update(['api_status' => 'disabled']);
                         Log::info('Order pusher disabled', ['orderId' => $order->id, 'network' => $order->network]);
                     }
                 } catch (\Exception $e) {
+                    $order->update(['api_status' => 'failed']);
                     Log::error('Failed to push order to external API', ['orderId' => $order->id, 'network' => $order->network, 'error' => $e->getMessage()]);
                 }
             }

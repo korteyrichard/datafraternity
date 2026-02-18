@@ -25,13 +25,13 @@ interface Transaction {
 }
 
 interface AdminDashboardProps extends PageProps {
-  users: User[];
-  products: Product[];
-  orders: Order[];
-  transactions: Transaction[];
-  todayUsers: User[];
-  todayOrders: Order[];
-  todayTransactions: Transaction[];
+  usersCount: number;
+  productsCount: number;
+  ordersCount: number;
+  transactionsCount: number;
+  todayUsersCount: number;
+  todayOrdersCount: number;
+  todayTransactionsCount: number;
   orderPusherEnabled: boolean;
 }
 
@@ -43,13 +43,13 @@ const StatCard = ({ title, value, gradient }: { title: string; value: number | s
 );
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  users,
-  products,
-  orders,
-  transactions,
-  todayUsers,
-  todayOrders,
-  todayTransactions,
+  usersCount,
+  productsCount,
+  ordersCount,
+  transactionsCount,
+  todayUsersCount,
+  todayOrdersCount,
+  todayTransactionsCount,
   orderPusherEnabled,
 }) => {
   const { auth } = usePage<AdminDashboardProps>().props;
@@ -72,10 +72,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <section>
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Overall Summary</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard title="Total Users" value={users.length} gradient="bg-gradient-to-br from-blue-500 to-blue-600" />
-            <StatCard title="Total Products" value={products.length} gradient="bg-gradient-to-br from-emerald-500 to-emerald-600" />
-            <StatCard title="Total Orders" value={orders.length} gradient="bg-gradient-to-br from-purple-500 to-purple-600" />
-            <StatCard title="Total Transactions" value={transactions.length} gradient="bg-gradient-to-br from-orange-500 to-orange-600" />
+            <StatCard title="Total Users" value={usersCount} gradient="bg-gradient-to-br from-blue-500 to-blue-600" />
+            <StatCard title="Total Products" value={productsCount} gradient="bg-gradient-to-br from-emerald-500 to-emerald-600" />
+            <StatCard title="Total Orders" value={ordersCount} gradient="bg-gradient-to-br from-purple-500 to-purple-600" />
+            <StatCard title="Total Transactions" value={transactionsCount} gradient="bg-gradient-to-br from-orange-500 to-orange-600" />
           </div>
         </section>
 
@@ -83,9 +83,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <section>
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Today's Statistics</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatCard title="New Users Today" value={todayUsers.length} gradient="bg-gradient-to-br from-cyan-500 to-cyan-600" />
-            <StatCard title="Orders Today" value={todayOrders.length} gradient="bg-gradient-to-br from-pink-500 to-pink-600" />
-            <StatCard title="Transactions Today" value={todayTransactions.length} gradient="bg-gradient-to-br from-indigo-500 to-indigo-600" />
+            <StatCard title="New Users Today" value={todayUsersCount} gradient="bg-gradient-to-br from-cyan-500 to-cyan-600" />
+            <StatCard title="Orders Today" value={todayOrdersCount} gradient="bg-gradient-to-br from-pink-500 to-pink-600" />
+            <StatCard title="Transactions Today" value={todayTransactionsCount} gradient="bg-gradient-to-br from-indigo-500 to-indigo-600" />
           </div>
         </section>
 
